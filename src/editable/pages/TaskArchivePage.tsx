@@ -7,8 +7,13 @@ import { getTaskConfig, type TaskKey } from '@/lib/site-config'
 import type { SiteFeedPagination, SitePost } from '@/lib/site-connector'
 import { taskPageMetadata } from '@/config/site.content'
 import { taskPageVoices } from '@/editable/content/task-pages.content'
+import { getTaskDisplayLabel, getTaskDisplayLabelShort } from '@/editable/content/tasks.config'
 import { EditableSiteShell } from '@/editable/shell/EditableSiteShell'
+import { EditableReveal } from '@/editable/shell/EditableReveal'
 import { getTaskTheme, taskThemeStyle } from '@/editable/theme/task-themes'
+import { Ads, getSlotSizes } from '@/lib/ads'
+
+const pickRandom = (sizes: string[]) => sizes[Math.floor(Math.random() * sizes.length)]
 
 export const revalidate = 3
 
@@ -90,73 +95,124 @@ export function TaskArchiveView({ task, posts, pagination, category, basePath }:
   const voice = taskPageVoices[task]
   const theme = getTaskTheme(task)
   const page = pagination.page || 1
-  const label = taskConfig?.label || task
+  const label = getTaskDisplayLabel(task, taskConfig?.label || task)
+  const shortLabel = getTaskDisplayLabelShort(task, label)
+  const entryNoun = task === 'pdf' ? 'reference' : task === 'listing' ? 'entry' : 'post'
+  const entryNounPlural = task === 'pdf' ? 'references' : task === 'listing' ? 'entries' : 'posts'
   const categoryLabel = category === 'all' ? 'All categories' : CATEGORY_OPTIONS.find((item) => item.slug === category)?.name || category
 
   return (
     <EditableSiteShell>
-      <main style={taskThemeStyle(task)} className="min-h-screen bg-[var(--tk-bg)] text-[var(--tk-text)]">
-        <header className="relative overflow-hidden border-b border-[var(--tk-line)]">
-          <div className="pointer-events-none absolute inset-x-0 -top-40 h-96 bg-[radial-gradient(60%_60%_at_50%_0%,var(--tk-glow),transparent_70%)]" />
-          <div className="relative mx-auto max-w-[var(--editable-container)] px-6 py-20 sm:py-28 lg:px-8">
-            <div className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.34em] text-[var(--tk-accent)]">
-              <span>{theme.kicker}</span>
-              <span className="h-1 w-1 rounded-full bg-[var(--tk-accent)] opacity-50" />
-              <span className="text-[var(--tk-muted)]">{label}</span>
-            </div>
-            <h1 className="editable-display mt-6 max-w-3xl text-balance text-[2.5rem] font-semibold leading-[1.06] tracking-[-0.03em] sm:text-5xl lg:text-6xl">
-              {voice?.headline || `Browse ${label}`}
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--tk-muted)]">{voice?.description || theme.note}</p>
-            {voice?.chips?.length ? (
-              <div className="mt-8 flex flex-wrap gap-2.5">
-                {voice.chips.map((chip) => (
-                  <span key={chip} className="rounded-full border border-[var(--tk-line)] bg-[var(--tk-surface)] px-3.5 py-1.5 text-xs font-medium text-[var(--tk-muted)]">{chip}</span>
-                ))}
-              </div>
-            ) : null}
+      <main style={taskThemeStyle(task)} className="min-h-screen bg-[var(--slot4-page-bg)] text-[var(--tk-text)]">
+        <header className="relative overflow-hidden">
+          <div className="pointer-events-none absolute -right-40 top-10 h-[520px] w-[520px] rounded-full bg-[var(--slot4-accent-secondary)] opacity-60 blur-[140px]" aria-hidden />
+          <div className="pointer-events-none absolute -left-40 bottom-0 h-[360px] w-[360px] rounded-full bg-[var(--slot4-accent)] opacity-12 blur-[140px]" aria-hidden />
 
-            <div className="mt-12 flex flex-col gap-4 border-t border-[var(--tk-line)] pt-6 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-[var(--tk-muted)]">
-                <span className="font-semibold text-[var(--tk-text)]">{posts.length}</span> {posts.length === 1 ? 'post' : 'posts'} · {categoryLabel}
+          <div className="relative mx-auto max-w-[85rem] px-5 sm:px-8 lg:px-10 pt-16 pb-14 sm:pt-24 lg:pt-28">
+            <EditableReveal index={0}>
+              <span className="inline-flex items-center gap-2 rounded-full border border-[var(--editable-border)] bg-[var(--slot4-surface-bg)] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--slot4-page-text)]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--slot4-accent)]" />
+                {theme.kicker}
+              </span>
+              <h1 className="editable-display-tight mt-6 max-w-4xl text-[2.5rem] font-semibold leading-[1.02] tracking-[-0.05em] sm:text-[3.5rem] lg:text-[4.75rem] lg:leading-[1.0] lg:tracking-[-0.07em]">
+                {voice?.headline || `Browse ${label}`}
+              </h1>
+              <p className="mt-6 max-w-2xl text-[1.0625rem] leading-[1.55] text-[var(--slot4-muted-text)] sm:text-[1.125rem]">
+                {voice?.description || theme.note}
               </p>
-              <form action={basePath} className="flex items-center gap-2.5">
-                <div className="relative">
-                  <select
-                    name="category"
-                    defaultValue={category}
-                    className="h-11 appearance-none rounded-full border border-[var(--tk-line)] bg-[var(--tk-surface)] pl-4 pr-10 text-sm font-medium text-[var(--tk-text)] outline-none transition focus:border-[var(--tk-accent)]"
-                    aria-label={voice?.filterLabel || 'Filter category'}
-                  >
-                    <option value="all">All categories</option>
-                    {CATEGORY_OPTIONS.map((item) => <option key={item.slug} value={item.slug}>{item.name}</option>)}
-                  </select>
-                  <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--tk-muted)]" />
+              {voice?.chips?.length ? (
+                <div className="mt-8 flex flex-wrap gap-2.5">
+                  {voice.chips.map((chip) => (
+                    <span key={chip} className="rounded-full border border-[var(--editable-border)] bg-[var(--slot4-surface-bg)] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--slot4-page-text)]/70">
+                      {chip}
+                    </span>
+                  ))}
                 </div>
-                <button className="inline-flex h-11 items-center rounded-full bg-[var(--tk-accent)] px-5 text-sm font-semibold text-[var(--tk-on-accent)] transition hover:opacity-90">Apply</button>
-              </form>
-            </div>
+              ) : null}
+            </EditableReveal>
+
+            <EditableReveal index={1}>
+              <div className="mt-12 flex flex-col gap-4 border-t border-[var(--editable-border)] pt-6 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-[0.9375rem] text-[var(--slot4-muted-text)]">
+                  <span className="font-semibold text-[var(--slot4-page-text)]">{posts.length}</span> {posts.length === 1 ? entryNoun : entryNounPlural} · {categoryLabel}
+                </p>
+                <form action={basePath} className="flex items-center gap-2.5">
+                  <div className="relative">
+                    <select
+                      name="category"
+                      defaultValue={category}
+                      className="h-11 appearance-none rounded-full border border-[var(--editable-border-strong)] bg-[var(--slot4-surface-bg)] pl-5 pr-10 text-[0.9375rem] font-medium text-[var(--slot4-page-text)] outline-none transition focus:border-[var(--slot4-page-text)]"
+                      aria-label={voice?.filterLabel || 'Filter category'}
+                    >
+                      <option value="all">All categories</option>
+                      {CATEGORY_OPTIONS.map((item) => <option key={item.slug} value={item.slug}>{item.name}</option>)}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--slot4-muted-text)]" />
+                  </div>
+                  <button className="group inline-flex h-11 items-center gap-2 rounded-full bg-[var(--slot4-dark-bg)] pl-5 pr-2 text-[0.9375rem] font-medium text-white transition duration-300 hover:bg-[var(--slot4-accent)]">
+                    Apply
+                    <span className="editable-arrow-chip h-8 w-8 bg-white text-[var(--slot4-page-text)]">
+                      <ArrowUpRight className="h-4 w-4" />
+                    </span>
+                  </button>
+                </form>
+              </div>
+            </EditableReveal>
           </div>
         </header>
 
-        <section className="mx-auto max-w-[var(--editable-container)] px-6 py-16 sm:py-20 lg:px-8">
+        {task === 'pdf' ? (
+          <div className="mx-auto w-full max-w-[85rem] px-5 sm:px-8 lg:px-10 pb-4">
+            <Ads slot="header" size={pickRandom(getSlotSizes('header'))} showLabel className="mx-auto w-full" />
+          </div>
+        ) : null}
+
+        <section className="mx-auto max-w-[85rem] px-5 sm:px-8 lg:px-10 py-14 sm:py-20">
           {posts.length ? (
             <div className={taskGrid[task]}>
-              {posts.map((post, index) => <ArchivePostCard key={post.id || post.slug} post={post} task={task} basePath={basePath} index={index} />)}
+              {posts.map((post, index) => (
+                <EditableReveal key={post.id || post.slug} index={Math.min(index, 6)}>
+                  <ArchivePostCard post={post} task={task} basePath={basePath} index={index} />
+                </EditableReveal>
+              ))}
             </div>
           ) : (
-            <div className="mx-auto max-w-xl rounded-[var(--tk-radius)] border border-dashed border-[var(--tk-line)] bg-[var(--tk-surface)] px-8 py-16 text-center">
-              <Search className="mx-auto h-7 w-7 text-[var(--tk-muted)]" />
-              <h2 className="editable-display mt-5 text-2xl font-semibold tracking-[-0.02em]">Nothing here yet</h2>
-              <p className="mt-2 text-sm leading-6 text-[var(--tk-muted)]">Try another category, or check back after new {label.toLowerCase()} are published.</p>
+            <div className="mx-auto max-w-xl rounded-[1.5rem] border border-dashed border-[var(--editable-border-strong)] bg-[var(--slot4-surface-bg)] px-8 py-16 text-center">
+              <Search className="mx-auto h-7 w-7 text-[var(--slot4-muted-text)]" />
+              <h2 className="editable-display mt-5 text-[1.5rem] font-semibold tracking-[-0.02em]">Nothing filed here yet</h2>
+              <p className="mt-2 text-[0.9375rem] leading-6 text-[var(--slot4-muted-text)]">
+                Try another category, or check back after new {shortLabel.toLowerCase()} arrivals are reviewed.
+              </p>
             </div>
           )}
 
+          {task === 'listing' && posts.length ? (
+            <div className="mt-12">
+              <Ads slot="in-feed" size={pickRandom(getSlotSizes('in-feed'))} showLabel className="mx-auto w-full" />
+            </div>
+          ) : null}
+
           {posts.length ? (
-            <nav className="mt-16 flex items-center justify-center gap-3 text-sm">
-              {pagination.hasPrevPage ? <Link href={pageHref(basePath, category, page - 1)} className="rounded-full border border-[var(--tk-line)] px-5 py-2.5 font-medium transition hover:border-[var(--tk-accent)]">Previous</Link> : null}
-              <span className="rounded-full border border-[var(--tk-line)] bg-[var(--tk-surface)] px-5 py-2.5 font-medium text-[var(--tk-muted)]">Page {page} of {pagination.totalPages || 1}</span>
-              {pagination.hasNextPage ? <Link href={pageHref(basePath, category, page + 1)} className="rounded-full border border-[var(--tk-line)] px-5 py-2.5 font-medium transition hover:border-[var(--tk-accent)]">Next</Link> : null}
+            <nav className="mt-16 flex items-center justify-center gap-3 text-[0.9375rem]">
+              {pagination.hasPrevPage ? (
+                <Link
+                  href={pageHref(basePath, category, page - 1)}
+                  className="rounded-full border border-[var(--editable-border-strong)] px-5 py-2.5 font-medium transition duration-300 hover:border-[var(--slot4-page-text)]"
+                >
+                  Previous
+                </Link>
+              ) : null}
+              <span className="rounded-full border border-[var(--editable-border)] bg-[var(--slot4-surface-bg)] px-5 py-2.5 font-medium text-[var(--slot4-muted-text)]">
+                Page {page} of {pagination.totalPages || 1}
+              </span>
+              {pagination.hasNextPage ? (
+                <Link
+                  href={pageHref(basePath, category, page + 1)}
+                  className="rounded-full border border-[var(--editable-border-strong)] px-5 py-2.5 font-medium transition duration-300 hover:border-[var(--slot4-page-text)]"
+                >
+                  Next
+                </Link>
+              ) : null}
             </nav>
           ) : null}
         </section>
@@ -221,7 +277,7 @@ function RatingLine({ post, center = false }: { post: SitePost; center?: boolean
 
 function ArticleArchiveCard({ post, href, index }: { post: SitePost; href: string; index: number }) {
   const image = getImage(post)
-  const category = getCategory(post, 'Article')
+  const category = getCategory(post, 'Journal')
   return (
     <Link href={href} className={`${cardBase} overflow-hidden`}>
       <div className="aspect-[16/10] overflow-hidden bg-[var(--tk-raised)]">
@@ -321,7 +377,7 @@ function BookmarkArchiveCard({ post, href, index }: { post: SitePost; href: stri
 }
 
 function PdfArchiveCard({ post, href }: { post: SitePost; href: string }) {
-  const category = getCategory(post, 'Document')
+  const category = getCategory(post, 'Reference')
   return (
     <Link href={href} className={`${cardBase} flex flex-col p-6 sm:p-7`}>
       <div className="flex items-start justify-between gap-4">
@@ -331,7 +387,7 @@ function PdfArchiveCard({ post, href }: { post: SitePost; href: string }) {
       <h2 className="editable-display mt-6 text-xl font-semibold leading-snug tracking-[-0.02em]">{post.title}</h2>
       <RatingLine post={post} />
       <p className="mt-3 line-clamp-3 flex-1 text-sm leading-7 text-[var(--tk-muted)]">{getSummary(post)}</p>
-      <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--tk-accent)]">Open document <Download className="h-4 w-4" /></span>
+      <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--tk-accent)]">Open reference <Download className="h-4 w-4" /></span>
     </Link>
   )
 }
