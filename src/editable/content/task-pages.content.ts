@@ -9,61 +9,75 @@ export type TaskPageVoice = {
   chips: string[]
 }
 
+/*
+  Task voices for a Local Directory + Reference Library platform.
+
+  Public labels:
+    listing → "Local Directory"
+    pdf     → "Reference Library"
+*/
 export const taskPageVoices = {
   article: {
-    eyebrow: 'Reading desk',
-    headline: 'Long-form articles with a calmer editorial rhythm.',
-    description: 'Use this page for essays, guides, explainers, and story-led posts. The layout should feel like a publication, not a directory.',
-    filterLabel: 'Choose article topic',
-    secondaryNote: 'Reading surfaces need space, hierarchy, and fewer distractions.',
-    chips: ['Editorial pacing', 'Topic filters', 'Long-read friendly'],
+    eyebrow: 'Journal',
+    headline: 'Longer reads and community briefings.',
+    description:
+      'Stories, guides and neighbourhood reporting that put a little context around every listing and every reference in the library.',
+    filterLabel: 'Choose a topic',
+    secondaryNote: 'Slower reading with a calmer editorial rhythm.',
+    chips: ['Long-form', 'Guides', 'Briefings'],
   },
   classified: {
-    eyebrow: 'Notice board',
-    headline: 'Fast-moving classifieds, offers, and time-sensitive posts.',
-    description: 'Classified content should feel quick to scan, practical, and action-oriented with less editorial decoration.',
-    filterLabel: 'Filter classified category',
-    secondaryNote: 'Prioritize urgency, short summaries, and direct browsing.',
-    chips: ['Fast scan', 'Offers', 'Action cues'],
+    eyebrow: 'Marketplace',
+    headline: 'Fast-moving community postings.',
+    description:
+      'Time-sensitive offers, requests and short notices from people around the neighbourhood — scan them quickly, act on them faster.',
+    filterLabel: 'Filter marketplace',
+    secondaryNote: 'Prioritize urgency, short summaries and direct action.',
+    chips: ['Fast scan', 'Offers', 'Community'],
   },
   sbm: {
-    eyebrow: 'Saved resources',
-    headline: 'Social bookmarks arranged like curated collections.',
-    description: 'Bookmark pages should feel like shelves of useful resources, tools, references, and collections.',
-    filterLabel: 'Filter collection',
-    secondaryNote: 'Curated resources need grouping and calm metadata.',
-    chips: ['Collections', 'Resources', 'Reference flow'],
+    eyebrow: 'Saves',
+    headline: 'Resources the community keeps coming back to.',
+    description:
+      'Curated links, tools and references saved by the community — a shelf you can browse instead of a firehose you have to filter.',
+    filterLabel: 'Filter saved shelf',
+    secondaryNote: 'Curated resources with calm metadata and clear grouping.',
+    chips: ['Collections', 'Resources', 'Curated'],
   },
   profile: {
-    eyebrow: 'People and profiles',
-    headline: 'Profiles with identity, trust, and reputation cues.',
-    description: 'Profile pages should make people, brands, and entities feel discoverable rather than buried in a generic feed.',
-    filterLabel: 'Filter profile category',
+    eyebrow: 'People',
+    headline: 'The operators and voices behind the listings.',
+    description:
+      'Owners, makers and community members with public profiles — trust cues and identity first, so it feels like meeting someone.',
+    filterLabel: 'Filter people',
     secondaryNote: 'Make identity and credibility visible before the grid begins.',
-    chips: ['Identity first', 'Trust cues', 'Creator/business cards'],
+    chips: ['Identity first', 'Trust cues', 'Community voices'],
   },
   pdf: {
-    eyebrow: 'Document library',
-    headline: 'PDFs and documents presented as a useful library.',
-    description: 'PDF pages should feel like downloadable guides, reports, files, and reference material instead of normal articles.',
-    filterLabel: 'Filter document type',
-    secondaryNote: 'Document surfaces need archive cues, file context, and clear browsing.',
-    chips: ['Documents', 'Guides', 'Archive ready'],
+    eyebrow: 'Reference Library',
+    headline: 'Downloadable briefings, guides and reference material.',
+    description:
+      'A library of reference material you can save to keep — briefings, guides, checklists and reports, all free to download.',
+    filterLabel: 'Filter the library',
+    secondaryNote: 'Every file lists its category, page count and updated date up front.',
+    chips: ['Downloadable', 'Free to keep', 'Cited'],
   },
   listing: {
-    eyebrow: 'Business directory',
-    headline: 'Business listings built for discovery and comparison.',
-    description: 'Listing pages should behave like a directory with trust cues, metadata, and a practical search rhythm.',
-    filterLabel: 'Filter business category',
-    secondaryNote: 'Prioritize comparison, location, and direct action paths.',
-    chips: ['Directory', 'Compare', 'Business discovery'],
+    eyebrow: 'Local Directory',
+    headline: 'Places, businesses and services near you.',
+    description:
+      'Search the local directory by neighbourhood, category or need — verified entries surface first, with hours, contact and a map on every record.',
+    filterLabel: 'Filter the directory',
+    secondaryNote: 'Optimised for comparison, location and direct action paths.',
+    chips: ['Verified', 'Local first', 'Comparable'],
   },
   image: {
-    eyebrow: 'Visual gallery',
-    headline: 'Image posts with a gallery-first browsing experience.',
-    description: 'Image pages should lead with visual impact, stronger cards, and a portfolio-like rhythm.',
-    filterLabel: 'Filter visual category',
+    eyebrow: 'Gallery',
+    headline: 'A visual feed from around the community.',
+    description:
+      'Photos of the places, moments and finds from around the neighbourhood — lead with the image, tuck the story just below.',
+    filterLabel: 'Filter the gallery',
     secondaryNote: 'Let images carry the page before long text does.',
-    chips: ['Gallery', 'Visual-first', 'Portfolio mood'],
+    chips: ['Visual-first', 'Community', 'Portfolio mood'],
   },
 } satisfies Record<TaskKey, TaskPageVoice>

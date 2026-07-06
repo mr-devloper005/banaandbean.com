@@ -11,11 +11,56 @@ export const slot4TaskSupport = {
 } satisfies Record<TaskKey, boolean>;
 
 export const slot4TaskNotes = {
-  article: "Article pages and article detail backlinks",
-  classified: "Classified ads pages and detail backlinks",
-  sbm: "Social bookmarking pages and detail backlinks",
-  profile: "Profile/user pages",
-  pdf: "PDF/document pages and detail backlinks",
-  listing: "Business listing pages and detail backlinks",
-  image: "Image/gallery pages and detail backlinks",
+  article: "Journal / long-form reads",
+  classified: "Community marketplace postings",
+  sbm: "Saved / bookmarked resources",
+  profile: "People behind the listings",
+  pdf: "Reference library — downloadable briefings",
+  listing: "Local directory — verified places",
+  image: "Gallery — visual feed",
 } satisfies Record<TaskKey, string>;
+
+/*
+  Public-facing display labels used ANYWHERE the user sees a task name.
+
+  These override SITE_CONFIG.tasks[].label without touching site.tasks.ts.
+  Use `getTaskDisplayLabel(task.key)` in every editable component that
+  otherwise reads task.label directly.
+*/
+export const slot4TaskDisplayLabels = {
+  article: "Journal",
+  classified: "Marketplace",
+  sbm: "Saves",
+  profile: "People",
+  pdf: "Reference Library",
+  listing: "Local Directory",
+  image: "Gallery",
+} satisfies Record<TaskKey, string>;
+
+export const slot4TaskDisplayLabelsShort = {
+  article: "Journal",
+  classified: "Marketplace",
+  sbm: "Saves",
+  profile: "People",
+  pdf: "Library",
+  listing: "Directory",
+  image: "Gallery",
+} satisfies Record<TaskKey, string>;
+
+export function getTaskDisplayLabel(
+  key: TaskKey | string | undefined | null,
+  fallback = "",
+): string {
+  if (!key) return fallback;
+  const label = (slot4TaskDisplayLabels as Record<string, string>)[key];
+  return label || fallback || String(key);
+}
+
+export function getTaskDisplayLabelShort(
+  key: TaskKey | string | undefined | null,
+  fallback = "",
+): string {
+  if (!key) return fallback;
+  const label = (slot4TaskDisplayLabelsShort as Record<string, string>)[key];
+  return label || fallback || String(key);
+}
