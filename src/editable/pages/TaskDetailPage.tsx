@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Fragment } from 'react'
 import {
-  ArrowLeft, ArrowUpRight, Bookmark, Building2, CheckCircle2, ChevronRight, Clock, Compass, Copy,
-  Download, ExternalLink, FileText, Layers, Mail, MapPin, Phone, Quote as QuoteIcon,
+  ArrowLeft, ArrowUpRight, Bookmark, Building2, ChevronRight, Clock, Compass, Copy,
+  Download, ExternalLink, FileText, Layers, Mail, MapPin, Phone,
   Share2, ShieldCheck, Star, Tag, UserRound,
 } from 'lucide-react'
 import { buildPostMetadata, buildTaskMetadata } from '@/lib/seo'
@@ -970,12 +970,9 @@ function BookmarkDetail({ post, related }: { post: SitePost; related: SitePost[]
 ---------------------------------------------------------------------------- */
 function PdfDetail({ post, related }: { post: SitePost; related: SitePost[] }) {
   const fileUrl = getField(post, ['fileUrl', 'pdfUrl', 'documentUrl', 'url'])
-  const category = categoryOf(post, 'Reference')
-  const fileSize = getField(post, ['fileSize', 'size']) || '~1.2 MB'
   const uploader = getField(post, ['uploader', 'author', 'contributor']) || SITE_CONFIG.name
   const filename = fileUrl ? decodeURIComponent(fileUrl.split('/').pop() || `${post.slug || 'reference'}.pdf`) : `${post.slug || 'reference'}.pdf`
   const tags = getTags(post)
-  const lead = leadText(post)
 
   const insidePoints = [
     'Executive summary and key findings',
@@ -986,151 +983,28 @@ function PdfDetail({ post, related }: { post: SitePost; related: SitePost[] }) {
   const citation = `${uploader}. ${post.title}. ${SITE_CONFIG.name} Reference Library. ${filename}`
   const primaryHref = fileUrl || '#'
 
-  const specRows: Array<[string, React.ReactNode]> = [
-    ['Category', category],
-    
-    
-    ['File size', fileSize],
-    ['Format', 'PDF'],
-    ['Uploaded by', uploader],
-    ['Status', 'Reviewed'],
-  ]
-
   return (
     <>
-      {/* ============ Full-bleed dark hero band ============ */}
-      <div className="relative overflow-hidden bg-[var(--slot4-dark-bg)] pb-40 pt-10 text-white sm:pt-14 sm:pb-48">
-        <div className="pointer-events-none absolute -right-32 -top-24 h-[420px] w-[420px] rounded-full bg-[var(--slot4-accent-secondary)] opacity-25 blur-[140px]" aria-hidden />
-        <div className="pointer-events-none absolute -left-40 bottom-20 h-[320px] w-[320px] rounded-full bg-[var(--slot4-accent)] opacity-20 blur-[140px]" aria-hidden />
-
-        <div className={`${container} relative`}>
-          <EditableReveal index={0}>
-            <Breadcrumbs
-              crumbs={[
-                { label: 'Home', href: '/' },
-                { label: 'Reference Library', href: getTaskConfig('pdf')?.route || '/pdf' },
-                { label: post.title.length > 46 ? `${post.title.slice(0, 46)}…` : post.title },
-              ]}
-            />
-          </EditableReveal>
-
-          <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end lg:gap-14">
-            {/* LEFT — h1, pull-quote lead, CTAs */}
-            <EditableReveal index={1}>
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-white">
-                    <FileText className="h-3.5 w-3.5" /> PDF
-                  </span>
-                  <span className="inline-flex items-center gap-2 rounded-full bg-[var(--slot4-accent-secondary)] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--slot4-on-secondary)]">
-                    {category}
-                  </span>
-                </div>
-                <h1 className="editable-display-tight mt-6 max-w-4xl text-[2.75rem] font-semibold leading-[1.0] tracking-[-0.06em] sm:text-[4rem] lg:text-[5.25rem] lg:leading-[0.96] lg:tracking-[-0.08em]">
-                  {post.title}
-                </h1>
-                {lead ? (
-                  <blockquote className="mt-8 max-w-2xl border-l-2 border-[var(--slot4-accent-secondary)] pl-5">
-                    <QuoteIcon className="h-4 w-4 text-[var(--slot4-accent-secondary)]" />
-                    <p className="editable-display mt-3 text-[1.125rem] font-medium leading-[1.4] tracking-[-0.015em] text-white/85 sm:text-[1.375rem]">
-                      {lead}
-                    </p>
-                  </blockquote>
-                ) : null}
-                {fileUrl ? (
-                  <div className="mt-9 flex flex-wrap items-center gap-3">
-                    <a
-                      href={fileUrl}
-                      download
-                      className="group inline-flex items-center gap-2 rounded-full bg-[var(--slot4-accent-secondary)] pl-6 pr-2 py-2 text-[1rem] font-medium text-[var(--slot4-on-secondary)] transition duration-300 hover:bg-white"
-                    >
-                      Download PDF
-                      <span className="editable-arrow-chip bg-[var(--slot4-dark-bg)] text-white">
-                        <Download className="h-4 w-4" />
-                      </span>
-                    </a>
-                    <a
-                      href={fileUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="group inline-flex items-center gap-2 rounded-full border border-white/20 pl-6 pr-2 py-2 text-[1rem] font-medium text-white transition duration-300 hover:border-white hover:bg-white/5"
-                    >
-                      Open in new tab
-                      <span className="editable-arrow-chip bg-white text-[var(--slot4-dark-bg)]">
-                        <ExternalLink className="h-4 w-4" />
-                      </span>
-                    </a>
-                  </div>
-                ) : null}
-              </div>
-            </EditableReveal>
-
-            {/* RIGHT — neon-pear PDF glyph identity card */}
-            <EditableReveal index={2}>
-              <div className="rounded-[1.75rem] bg-[var(--slot4-accent-secondary)] p-3 text-[var(--slot4-on-secondary)] shadow-[0_36px_80px_-32px_rgba(0,0,0,0.55)]">
-                <div className="relative overflow-hidden rounded-[1.25rem] bg-[var(--slot4-dark-bg)] p-8 sm:p-10">
-                  <span className="editable-display-tight block text-[6.5rem] font-semibold leading-none tracking-[-0.08em] text-[var(--slot4-accent-secondary)] sm:text-[8rem]">
-                    PDF
-                  </span>
-                  
-                </div>
-                <div className="px-3 pb-3 pt-5">
-                  <div className="flex flex-wrap gap-1.5">
-                   
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--slot4-on-secondary)] px-2.5 py-1 text-[0.72rem] font-medium text-white">
-                      <FileText className="h-3 w-3" /> {fileSize}
-                    </span>
-                    <span className="inline-flex items-center gap-1 rounded-full border border-[var(--slot4-on-secondary)]/25 px-2.5 py-1 text-[0.72rem] font-medium text-[var(--slot4-on-secondary)]">
-                      <UserRound className="h-3 w-3" /> {uploader.length > 18 ? `${uploader.slice(0, 18)}…` : uploader}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </EditableReveal>
-          </div>
-        </div>
-      </div>
-
-      {/* ============ Punch-up card — ticker + spec sheet ============ */}
-      <div className={`${container} relative z-10`}>
-        <EditableReveal index={0}>
-          <PunchUpCard>
-            <TickerRow
-              items={[
-                { icon: FileText, label: 'PDF', tone: 'ink' },
-                { icon: Tag, label: category, tone: 'accent' },
-        
-                { icon: CheckCircle2, label: 'Reviewed' },
-              ]}
-            />
-            <div className="mt-8 border-t border-[var(--editable-border)] pt-2">
-              <SpecSheet rows={specRows} />
-            </div>
-          </PunchUpCard>
-        </EditableReveal>
-      </div>
-
-      {/* ============ Floating PDF viewer (full-bleed card w/ overlay bar) ============ */}
+      {/* ============ PDF viewer ============ */}
       {fileUrl ? (
         <section className={`${container} pt-16 pb-10 sm:pt-24`}>
           <EditableReveal index={0}>
-            <div className="relative overflow-hidden rounded-[2rem] border border-[var(--editable-border)] bg-[var(--slot4-dark-bg)]">
-              <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center p-4">
-                <div className="pointer-events-auto flex max-w-full items-center gap-2 rounded-full border border-white/10 bg-[var(--slot4-dark-bg)]/85 px-4 py-1.5 text-[0.8125rem] font-medium text-white backdrop-blur-xl">
-                  <FileText className="h-3.5 w-3.5 text-[var(--slot4-accent-secondary)]" />
-                  
-                  <span className="mx-1 h-3 w-px bg-white/20" />
-                  <a
-                    href={fileUrl}
-                    download
-                    className="group inline-flex items-center gap-1.5 rounded-full bg-[var(--slot4-accent-secondary)] pl-3 pr-1 py-1 text-[0.75rem] font-medium text-[var(--slot4-on-secondary)] transition duration-300 hover:bg-white"
-                  >
-                    Download
-                    <span className="editable-arrow-chip h-6 w-6 bg-[var(--slot4-dark-bg)] text-white">
-                      <Download className="h-3 w-3" />
-                    </span>
-                  </a>
+            <div className="overflow-hidden rounded-[2rem] border border-[var(--editable-border)] bg-[var(--slot4-surface-bg)]">
+              <div className="flex items-center justify-between gap-3 border-b border-[var(--editable-border)] p-5">
+                <div className="inline-flex min-w-0 items-center gap-2 text-[0.9375rem] font-semibold text-[var(--slot4-page-text)]">
+                  <FileText className="h-4 w-4 shrink-0 text-[var(--slot4-accent)]" />
+                  <span className="truncate">{filename}</span>
                 </div>
+                <a
+                  href={fileUrl}
+                  download
+                  className="group inline-flex shrink-0 items-center gap-2 rounded-full bg-[var(--slot4-dark-bg)] pl-4 pr-1.5 py-1.5 text-[0.8125rem] font-medium text-white transition duration-300 hover:bg-[var(--slot4-accent)]"
+                >
+                  Download
+                  <span className="editable-arrow-chip h-7 w-7 bg-white text-[var(--slot4-page-text)]">
+                    <Download className="h-3.5 w-3.5" />
+                  </span>
+                </a>
               </div>
               <iframe src={`${fileUrl}#toolbar=0&navpanes=0&scrollbar=0`} title={post.title} className="h-[85vh] w-full border-0 bg-[var(--slot4-media-bg)]" />
             </div>
@@ -1204,46 +1078,6 @@ function PdfDetail({ post, related }: { post: SitePost; related: SitePost[] }) {
           </div>
         </EditableReveal>
       </section>
-
-      {/* ============ Repeated dark CTA callout ============ */}
-      {fileUrl ? (
-        <section className={`${container} pb-16`}>
-          <EditableReveal index={0}>
-            <div className="relative overflow-hidden rounded-[2rem] bg-[var(--slot4-dark-bg)] p-10 text-white sm:p-14 lg:p-16">
-              <div className="pointer-events-none absolute -right-20 -top-20 h-[280px] w-[280px] rounded-full bg-[var(--slot4-accent-secondary)] opacity-30 blur-[100px]" aria-hidden />
-              <div className="relative">
-                <span className="editable-eyebrow text-white/60">Take this with you</span>
-                <h3 className="editable-display-tight mt-4 max-w-2xl text-[2rem] font-semibold leading-[1.05] tracking-[-0.045em] sm:text-[2.75rem] lg:text-[3.25rem]">
-                  Free to download. Free to keep. Free to cite.
-                </h3>
-                <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <a
-                    href={fileUrl}
-                    download
-                    className="group inline-flex items-center gap-2 rounded-full bg-[var(--slot4-accent-secondary)] pl-6 pr-2 py-2 text-[1rem] font-medium text-[var(--slot4-on-secondary)] transition duration-300 hover:bg-white"
-                  >
-                    Download PDF
-                    <span className="editable-arrow-chip bg-[var(--slot4-dark-bg)] text-white">
-                      <Download className="h-4 w-4" />
-                    </span>
-                  </a>
-                  <a
-                    href={fileUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group inline-flex items-center gap-2 rounded-full border border-white/25 pl-6 pr-2 py-2 text-[1rem] font-medium text-white transition duration-300 hover:border-white hover:bg-white/5"
-                  >
-                    Open in new tab
-                    <span className="editable-arrow-chip bg-white text-[var(--slot4-dark-bg)]">
-                      <ExternalLink className="h-4 w-4" />
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </EditableReveal>
-        </section>
-      ) : null}
 
       {/* ============ Related — horizontal snap rail (glyph cards) ============ */}
       <PdfRelatedRail related={related} />
