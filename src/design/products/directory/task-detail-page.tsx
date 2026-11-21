@@ -111,15 +111,6 @@ export function DirectoryTaskDetailPage({
               </div>
             </div>
 
-            {mapEmbedUrl ? (
-              <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
-                <div className="border-b border-slate-200 px-6 py-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Location</p>
-                </div>
-                <iframe src={mapEmbedUrl} title={`${post.title} map`} className="h-[320px] w-full border-0" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
-              </div>
-            ) : null}
-
             <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Quick trust cues</p>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">

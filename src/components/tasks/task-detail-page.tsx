@@ -408,20 +408,6 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
               </div>
             ) : null}
 
-            {isClassified && mapEmbedUrl ? (
-              <div className="mx-auto w-full max-w-4xl rounded-2xl border border-border bg-card p-4">
-                <p className="text-sm font-semibold text-foreground">Location map</p>
-                <div className="mt-4 overflow-hidden rounded-xl border border-border">
-                  <iframe
-                    title="Business location map"
-                    src={mapEmbedUrl}
-                    className="h-56 w-full"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-            ) : null}
-
           </div>
 
           {!hideSidebar ? (
@@ -474,20 +460,6 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
                 </Button>
               ) : null}
             </div>
-
-            {mapEmbedUrl ? (
-              <div className="rounded-2xl border border-border bg-card p-4">
-                <p className="text-sm font-semibold text-foreground">Location map</p>
-                <div className="mt-4 overflow-hidden rounded-xl border border-border">
-                  <iframe
-                    title="Business location map"
-                    src={mapEmbedUrl}
-                    className="h-56 w-full"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-            ) : null}
 
           </aside>
           ) : null}
