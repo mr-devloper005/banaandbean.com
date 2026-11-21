@@ -793,31 +793,6 @@ function ListingDetail({ post, related }: { post: SitePost; related: SitePost[] 
       ) : null}
 
       {/* ============ Full-bleed map ============ */}
-      {mapSrc ? (
-        <section className={`${container} pb-10`}>
-          <EditableReveal index={0}>
-            <div className="overflow-hidden rounded-[2rem] border border-[var(--editable-border)] bg-[var(--slot4-surface-bg)]">
-              <div className="flex items-center justify-between gap-3 border-b border-[var(--editable-border)] p-5">
-                <div className="inline-flex items-center gap-2 text-[0.9375rem] font-semibold">
-                  <MapPin className="h-4 w-4 text-[var(--slot4-accent)]" /> {address || 'Directory location'}
-                </div>
-                <a
-                  href={mapSrc}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group inline-flex items-center gap-2 rounded-full border border-[var(--editable-border-strong)] pl-4 pr-1.5 py-1.5 text-[0.8125rem] font-medium transition duration-300 hover:border-[var(--slot4-page-text)]"
-                >
-                  Open in Maps
-                  <span className="editable-arrow-chip h-7 w-7 bg-[var(--slot4-dark-bg)] text-white">
-                    <ExternalLink className="h-3.5 w-3.5" />
-                  </span>
-                </a>
-              </div>
-              <iframe src={mapSrc} title="Map" loading="lazy" className="h-96 w-full border-0" />
-            </div>
-          </EditableReveal>
-        </section>
-      ) : null}
 
       {/* ============ Sidebar-slot ad, inline ============ */}
       <section className={`${container} pb-16`}>
