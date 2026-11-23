@@ -601,7 +601,6 @@ function ListingDetail({ post, related }: { post: SitePost; related: SitePost[] 
   const phone = getField(post, ['phone', 'telephone', 'mobile'])
   const email = getField(post, ['email'])
   const website = getField(post, ['website', 'url'])
-  const hours = getField(post, ['hours', 'openHours', 'opening', 'schedule']) || 'Mon – Sat · 9am – 8pm'
   const mapSrc = mapSrcFor(post)
   const category = getField(post, ['category']) || 'Local business'
   const tags = getTags(post)
@@ -624,7 +623,6 @@ function ListingDetail({ post, related }: { post: SitePost; related: SitePost[] 
         {cleanWebsite} <ExternalLink className="h-3.5 w-3.5" />
       </a>
     ) : ''],
-    ['Hours', hours],
     ['Status', 'Reviewed & verified'],
   ]
 
@@ -733,9 +731,6 @@ function ListingDetail({ post, related }: { post: SitePost; related: SitePost[] 
                         <Phone className="h-3 w-3" /> {phone}
                       </span>
                     ) : null}
-                    <span className="inline-flex items-center gap-1 rounded-full border border-[var(--editable-border)] px-2.5 py-1 text-[0.72rem] font-medium text-[var(--slot4-muted-text)]">
-                      <Clock className="h-3 w-3" /> {hours.split('·')[0].trim()}
-                    </span>
                   </div>
                 </div>
               </div>
